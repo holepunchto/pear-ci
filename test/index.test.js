@@ -84,7 +84,7 @@ test('basic stage', async (t) => {
 })
 
 test('double stage', async (t) => {
-  t.plan(4)
+  t.plan(5)
   const targetA = await setupTarget(t, 'targetA')
   const targetB = await setupTarget(t, 'targetB')
   const bootstrap = await setupTestnet(t)
@@ -92,10 +92,11 @@ test('double stage', async (t) => {
   const primaryKey = Buffer.alloc(32)
   const name = 'pear-ci-test'
   const snapshot = path.join(await t.tmp(), 'snapshot.json')
-  const storage = await t.tmp()
+  const storageA = await t.tmp()
+  const storageB = await t.tmp()
   const dryRun = false
 
-  const pearCI = new PearCI(primaryKey, name, snapshot, targetA, storage, dryRun, { bootstrap })
+  const pearCI = new PearCI(primaryKey, name, snapshot, targetA, storageA, dryRun, { bootstrap })
   await pearCI.ready()
 
   pearCI.on('diff', (diff) => {
@@ -107,7 +108,9 @@ test('double stage', async (t) => {
   await pearCI.stage()
   const firstStageSnapshot = JSON.parse((await fs.promises.readFile(snapshot)).toString())
 
-  const pearCINext = new PearCI(primaryKey, name, snapshot, targetB, storage, dryRun, { bootstrap })
+  const pearCINext = new PearCI(primaryKey, name, snapshot, targetB, storageB, dryRun, {
+    bootstrap
+  })
 
   pearCINext.on('diff', (diff) => {
     t.ok(diff)
@@ -124,6 +127,34 @@ test('double stage', async (t) => {
     firstStageSnapshot[1].key === secondStageSnapshot[1].key &&
       firstStageSnapshot[1].length < secondStageSnapshot[1].length
   )
+  t.is(firstStageSnapshot.length, secondStageSnapshot.length)
+})
+
+test('dry-run', async (t) => {
+  t.plan(3)
+  const target = await setupTarget(t)
+  const bootstrap = await setupTestnet(t)
+
+  const primaryKey = Buffer.alloc(32)
+  const name = 'pear-ci-test'
+  const snapshot = path.join(target, 'snapshot.json')
+  const storage = await t.tmp()
+  const dryRun = true
+
+  const pearCI = new PearCI(primaryKey, name, snapshot, target, storage, dryRun, { bootstrap })
+  await pearCI.ready()
+
+  pearCI.on('diff', (diff) => {
+    t.ok(diff)
+  })
+
+  const mirror = await setupMirror(t, bootstrap, pearCI.drive.key, pearCI.drive.blobs.core.key)
+  await pearCI.stage()
+
+  const snapshotResult = JSON.parse((await fs.promises.readFile(snapshot)).toString())
+
+  t.is(snapshotResult[0].length, 0)
+  t.is(snapshotResult[1].length, 0)
 })
 
 async function setupTarget(t, content = 'hello pear-ci') {

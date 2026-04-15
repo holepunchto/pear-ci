@@ -16,7 +16,7 @@ const cmd = command(pkg.name, pkg.command, async function (cmd) {
 
   primaryKey = Buffer.from(primaryKey, 'hex')
 
-  const pearCI = new PearCI(primaryKey, name, snapshot, target, storage, dry - run, (opts = {}))
+  const pearCI = new PearCI(primaryKey, name, snapshot, target, storage, dryRun)
 
   pearCI.on('connection', () => {
     console.log('Peer connected')
