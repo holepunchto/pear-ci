@@ -16,12 +16,12 @@ const PearCI = require('pear-ci')
 const primaryKey = Buffer.from('<32-byte-hex-key>', 'hex')
 
 const ci = new PearCI(
-  primaryKey,          // deterministic key for the corestore
-  'my-app',           // drive namespace name
-  './snapshot.json',  // path to read/write the snapshot
-  './dist',           // local directory to stage
-  './storage',        // corestore storage path
-  false               // dryRun
+  primaryKey, // deterministic key for the corestore
+  'my-app', // drive namespace name
+  './snapshot.json', // path to read/write the snapshot
+  './dist', // local directory to stage
+  './storage', // corestore storage path
+  false // dryRun
 )
 
 ci.on('diff', (diff) => console.log('changed:', diff))
@@ -36,15 +36,15 @@ await ci.stage()
 
 Creates a new PearCI instance. Does not open any resources until `ready()` or `stage()` is called.
 
-| Argument | Type | Description |
-|---|---|---|
-| `primaryKey` | `Buffer` | 32-byte key passed to `Corestore`. Determines the identity of the drive across runs. |
-| `name` | `string` | Namespace name used to derive the Hyperdrive from the store. |
-| `snapshot` | `string` | File path for the JSON snapshot. Read on open to pre-seed cores; written on close with updated lengths. |
-| `target` | `string` | Path to the local directory to mirror into the drive. |
-| `storage` | `string` | Path for Corestore storage. |
-| `dryRun` | `boolean` | When `true`, diffs are computed and emitted but nothing is written to the drive. |
-| `opts.bootstrap` | `array` | Optional Hyperswarm bootstrap nodes. Useful for testing with `@hyperswarm/testnet`. |
+| Argument         | Type      | Description                                                                                             |
+| ---------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| `primaryKey`     | `Buffer`  | 32-byte key passed to `Corestore`. Determines the identity of the drive across runs.                    |
+| `name`           | `string`  | Namespace name used to derive the Hyperdrive from the store.                                            |
+| `snapshot`       | `string`  | File path for the JSON snapshot. Read on open to pre-seed cores; written on close with updated lengths. |
+| `target`         | `string`  | Path to the local directory to mirror into the drive.                                                   |
+| `storage`        | `string`  | Path for Corestore storage.                                                                             |
+| `dryRun`         | `boolean` | When `true`, diffs are computed and emitted but nothing is written to the drive.                        |
+| `opts.bootstrap` | `array`   | Optional Hyperswarm bootstrap nodes. Useful for testing with `@hyperswarm/testnet`.                     |
 
 ### `await ci.stage()`
 

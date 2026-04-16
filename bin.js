@@ -26,8 +26,16 @@ const cmd = command(pkg.name, pkg.command, async function (cmd) {
     console.log(diff)
   })
 
+  pearCI.on('syncing', ({ key, length }) => {
+    console.log('syncing', key, 'to length', length)
+  })
+
   pearCI.on('synced', () => {
     console.log('all remote peers synced')
+  })
+
+  pearCI.on('mirrored', () => {
+    console.log('waiting synced remote peers for key ', pearCI.drive.core.id)
   })
 
   await pearCI.ready()

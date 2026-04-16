@@ -61,6 +61,8 @@ class PearCI extends ReadyResouce {
       const core = this.store.get(key)
       await core.ready()
 
+      this.emit('syncing', { key, length })
+
       while (core.length < length) {
         await new Promise((resolve) => setTimeout(resolve, 20))
       }
@@ -83,6 +85,8 @@ class PearCI extends ReadyResouce {
     for await (const diff of mirror) {
       this.emit('diff', diff)
     }
+
+    this.emit('mirrored')
 
     while (this.drive.db.core.remoteContiguousLength < this.drive.db.core.length) {
       await new Promise((resolve) => setTimeout(resolve, 20))
