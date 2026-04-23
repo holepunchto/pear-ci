@@ -3,7 +3,9 @@
   "version": "0.0.2",
   "main": "index.js",
   "type": "commonjs",
-  "bin": "bin.js",
+  "bin": {
+    "pear-ci": "bin.js"
+  },
   "description": "Stateless stage for applications distributed with pear-runtime",
   "author": "Holepunch Inc",
   "license": "Apache-2.0",
@@ -42,5 +44,17 @@
     "lunte": "^1.6.0",
     "prettier": "^3.7.4",
     "prettier-config-holepunch": "^2.0.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holepunchto/pear-ci.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/holepunchto/pear-ci/issues"
+  },
+  "homepage": "https://github.com/holepunchto/pear-ci#readme"
 }
