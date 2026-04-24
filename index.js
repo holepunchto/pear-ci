@@ -76,6 +76,8 @@ class PearCI extends ReadyResouce {
 
     this.local = new Localdrive(this.target)
 
+    this.drive.db.core.download() // prefetch metadata
+
     const mirror = new Mirror(this.local, this.drive, {
       dedup: true,
       batch: true,
