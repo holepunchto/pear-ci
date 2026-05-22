@@ -147,6 +147,7 @@ test('snapshot.json length error', async (t) => {
   await pearCI.ready()
   await setupMirror(t, bootstrap, pearCI.drive.key, pearCI.drive.blobs.core.key)
   await pearCI.stage()
+  await pearCI.close()
 
   const snapshotResult = JSON.parse(await fs.promises.readFile(snapshot))
   const outdatedSnapshot = path.join(await t.tmp(), 'outdated-snapshot.json')
@@ -156,7 +157,10 @@ test('snapshot.json length error', async (t) => {
   const faultyPearCI = new PearCI(primaryKey, name, outdatedSnapshot, targetB, storageB, dryRun, {
     bootstrap
   })
-  t.teardown(() => faultyPearCI.swarm.destroy())
+  t.teardown(async () => {
+    await faultyPearCI.swarm.destroy()
+    await faultyPearCI.close()
+  })
 
   await t.exception(() => faultyPearCI.ready())
 })
