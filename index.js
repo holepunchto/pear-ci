@@ -67,6 +67,13 @@ class PearCI extends ReadyResouce {
         await new Promise((resolve) => setTimeout(resolve, 20))
       }
 
+      if (core.length > length) {
+        await this._close()
+        throw Error(
+          `Core ${core.id} length (${core.length}) is higher than length in snapshot.json`
+        )
+      }
+
       await core.close()
     }
   }
@@ -98,10 +105,12 @@ class PearCI extends ReadyResouce {
     }
 
     this.emit('synced')
+
+    await this._updateSnapshot()
     await this.close()
   }
 
-  async _close() {
+  async _updateSnapshot() {
     await fs.promises.mkdir(path.dirname(this.snapshot), { recursive: true })
 
     const json = []
@@ -133,7 +142,9 @@ class PearCI extends ReadyResouce {
     }
 
     await fs.promises.writeFile(this.snapshot, JSON.stringify(json, null, 2) + '\n')
+  }
 
+  async _close() {
     await this.swarm?.destroy()
     await this.local?.close()
     await this.drive?.close()

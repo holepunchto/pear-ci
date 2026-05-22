@@ -130,6 +130,37 @@ test('double stage', async (t) => {
   t.is(firstStageSnapshot.length, secondStageSnapshot.length)
 })
 
+test('snapshot.json length error', async (t) => {
+  t.plan(1)
+
+  const targetA = await setupTarget(t, 'targetA')
+  const targetB = await setupTarget(t, 'targetB')
+  const bootstrap = await setupTestnet(t)
+  const primaryKey = Buffer.alloc(32)
+  const name = 'pear-ci-test'
+  const snapshot = path.join(await t.tmp(), 'snapshot.json')
+  const storageA = await t.tmp()
+  const storageB = await t.tmp()
+  const dryRun = false
+
+  const pearCI = new PearCI(primaryKey, name, snapshot, targetA, storageA, dryRun, { bootstrap })
+  await pearCI.ready()
+  await setupMirror(t, bootstrap, pearCI.drive.key, pearCI.drive.blobs.core.key)
+  await pearCI.stage()
+  await pearCI.close()
+
+  const snapshotResult = JSON.parse(await fs.promises.readFile(snapshot))
+  const outdatedSnapshot = path.join(await t.tmp(), 'outdated-snapshot.json')
+  const modifiedSnapshot = snapshotResult.map((item) => ({ ...item, length: item.length - 1 }))
+  await fs.promises.writeFile(outdatedSnapshot, JSON.stringify(modifiedSnapshot))
+
+  const faultyPearCI = new PearCI(primaryKey, name, outdatedSnapshot, targetB, storageB, dryRun, {
+    bootstrap
+  })
+
+  await t.exception(() => faultyPearCI.ready())
+})
+
 test('dry-run', async (t) => {
   t.plan(3)
   const target = await setupTarget(t)
