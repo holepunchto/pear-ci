@@ -67,6 +67,12 @@ class PearCI extends ReadyResouce {
         await new Promise((resolve) => setTimeout(resolve, 20))
       }
 
+      if (core.length > length) {
+        throw Error(
+          `Core ${core.id} length (${core.length}) is higher than length in snapshot.json`
+        )
+      }
+
       await core.close()
     }
   }
