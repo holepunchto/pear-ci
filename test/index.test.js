@@ -157,10 +157,6 @@ test('snapshot.json length error', async (t) => {
   const faultyPearCI = new PearCI(primaryKey, name, outdatedSnapshot, targetB, storageB, dryRun, {
     bootstrap
   })
-  t.teardown(async () => {
-    await faultyPearCI.swarm.destroy()
-    await faultyPearCI.close()
-  })
 
   await t.exception(() => faultyPearCI.ready())
 })
