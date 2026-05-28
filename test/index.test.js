@@ -158,7 +158,7 @@ test('snapshot.json length error', async (t) => {
     bootstrap
   })
 
-  await t.exception(() => faultyPearCI.ready())
+  await t.exception(faultyPearCI.ready(), /length \(2\)/)
 })
 
 test('dry-run', async (t) => {
