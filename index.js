@@ -68,10 +68,9 @@ class PearCI extends ReadyResouce {
       }
 
       if (core.length > length) {
+        const coreLength = core.length
         await this._close()
-        throw Error(
-          `Core ${core.id} length (${core.length}) is higher than length in snapshot.json`
-        )
+        throw Error(`Core ${core.id} length (${coreLength}) is higher than length in snapshot.json`)
       }
 
       await core.close()
