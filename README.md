@@ -52,6 +52,8 @@ Opens the instance (if not already open), mirrors `target` into the drive, waits
 
 Calling `stage()` is the primary entry point — you do not need to call `ready()` manually.
 
+Returns `{ key, length }`
+
 ### `await ci.ready()`
 
 Opens the corestore, swarm, and drive. Joins all known discovery keys. If a snapshot exists, blocks until all cores have downloaded to their recorded lengths before resolving.

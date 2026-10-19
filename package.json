@@ -21,7 +21,8 @@
     "flag --name [name]": "Specify target as a name (non global)",
     "flag --snapshot [path]": "Path to the snapshot file to use",
     "flag --target [path]": "Path to the directory to stage",
-    "flag --storage [storage]": "Specify the storage to stage"
+    "flag --storage [storage]": "Specify the storage to stage",
+    "flag --output [path]": "Write the staged drive key and length as JSON"
   },
   "scripts": {
     "format": "prettier --write .",

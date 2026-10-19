@@ -49,7 +49,7 @@ test('primary-key and name', async (t) => {
 })
 
 test('basic stage', async (t) => {
-  t.plan(5)
+  t.plan(6)
   const target = await setupTarget(t)
   const bootstrap = await setupTestnet(t)
 
@@ -67,9 +67,11 @@ test('basic stage', async (t) => {
   })
 
   const mirror = await setupMirror(t, bootstrap, pearCI.drive.key, pearCI.drive.blobs.core.key)
-  await pearCI.stage()
+  const result = await pearCI.stage()
 
   const snapshotResult = JSON.parse((await fs.promises.readFile(snapshot)).toString())
+
+  t.alike(result, { key: mirror.db.id, length: mirror.db.contiguousLength })
 
   t.ok(snapshotResult.some((e) => e.key === pearCI.drive.db.core.id))
   t.ok(snapshotResult.some((e) => e.key === pearCI.drive.blobs.core.id))
@@ -162,7 +164,7 @@ test('snapshot.json length error', async (t) => {
 })
 
 test('dry-run', async (t) => {
-  t.plan(3)
+  t.plan(4)
   const target = await setupTarget(t)
   const bootstrap = await setupTestnet(t)
 
@@ -180,10 +182,11 @@ test('dry-run', async (t) => {
   })
 
   const mirror = await setupMirror(t, bootstrap, pearCI.drive.key, pearCI.drive.blobs.core.key)
-  await pearCI.stage()
+  const result = await pearCI.stage()
 
   const snapshotResult = JSON.parse((await fs.promises.readFile(snapshot)).toString())
 
+  t.alike(result, { key: mirror.db.id, length: 0 })
   t.is(snapshotResult[0].length, 0)
   t.is(snapshotResult[1].length, 0)
 })

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 const { command, argv } = require('paparam')
+const fs = require('fs')
 const pkg = require('./package')
 const PearCI = require('.')
 
 const cmd = command(pkg.name, pkg.command, async function (cmd) {
   if (cmd.flags.version) return console.log(`v${pkg.version}`)
 
-  let { primaryKey, name, snapshot, target, storage, dryRun } = cmd.flags
+  let { primaryKey, name, snapshot, target, storage, dryRun, output } = cmd.flags
 
   if (!primaryKey) throw new Error('--primary-key flag is required')
   if (!name) throw new Error('--name flag is required')
@@ -41,7 +42,11 @@ const cmd = command(pkg.name, pkg.command, async function (cmd) {
   await pearCI.ready()
   console.log('starting stage for key ', pearCI.drive.core.id)
 
-  await pearCI.stage()
+  const result = await pearCI.stage()
+
+  if (output) {
+    await fs.promises.writeFile(output, JSON.stringify(result, null, 2) + '\n')
+  }
 })
 
 cmd.parse(argv().length === 0 ? ['--help'] : argv())

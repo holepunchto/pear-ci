@@ -105,8 +105,12 @@ class PearCI extends ReadyResouce {
 
     this.emit('synced')
 
+    const result = { key: this.drive.db.core.id, length: this.drive.db.core.length }
+
     await this._updateSnapshot()
     await this.close()
+
+    return result
   }
 
   async _updateSnapshot() {
